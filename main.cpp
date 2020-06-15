@@ -6,7 +6,7 @@
 #include <sstream> // std::stringstream
 #include <iostream>
 #include <vector>
-#include <math.h>
+#include <cmath>
 
 /**
  * Read a CSV file which contains XFLR5-exported *-α relations (polar)
@@ -96,7 +96,7 @@ std::map<std::string, std::vector<std::pair<double, double>>> read_csv(std::stri
 int main() {
     std::map<std::string, std::vector<std::pair<double, double>>> result = read_csv("../T1_Re0.100_M0.00_N9.0");
 
-    for (auto& pair : result["Cm"]) {
+    for (auto& pair : result["Cpmin"]) {
         std::cout << pair.first << " " << pair.second << std::endl;
     }
     return 0;
