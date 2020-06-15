@@ -12,8 +12,9 @@
  * Read a CSV file which contains XFLR5-exported *-α relations (polar)
  * and construct a lookup table
  *
- * @param[out] *-α lookup table (map<X, Y>) where X represents α in radians
- * and Y represents the corresponding aerodynamic value
+ * @param[out] *-α lookup table -- map<string, vector<pair<X, Y>>> where the string key is
+ * the aerodynamic parameter of interest (e.g. Cl, Cd, or Cm), X represents α in radians,
+ * and Y represents the corresponding aerodynamic parameter value
  * @param[in] *-α CSV file name
  */
 std::map<std::string, std::vector<std::pair<double, double>>> read_csv(std::string filename) {
@@ -28,7 +29,7 @@ std::map<std::string, std::vector<std::pair<double, double>>> read_csv(std::stri
     // Check if the file is accessible
     if (!input_file.is_open()) throw std::runtime_error("Could not open the file");
 
-    // Line string
+    // A string for storing lines
     std::string line;
 
     // Skip the first 9 lines (XFLR5 exported polar file header)
