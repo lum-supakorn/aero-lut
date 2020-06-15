@@ -82,11 +82,41 @@ std::map<std::string, std::vector<std::pair<double, double>>> read_csv(std::stri
     return result;
 }
 
+double get_value(
+        std::map<std::string, std::vector<std::pair<double, double>>> const &lut,
+        std::string const &target_param,
+        double const x_value
+        ) {
+    double result;
+
+    // Check if out of range
+    if (x_value <= lut.at(target_param).front().first) {
+        return lut.at(target_param).front().second;
+    } else if (x_value >= lut.at(target_param).back().first) {
+        return lut.at(target_param).back().second;
+    }
+
+    // Check for data
+    // Keep track of the last index
+    int last_idx = 0;
+    for (int i = 0; i < lut.at(target_param).size(); i++) {
+        if (x_value == lut.at(target_param)[i].first) {
+            // Found the exact x-value in the LUT
+            return lut.at(target_param)[i].second;
+        } else if (x_value < lut.at(target_param)[i].first) {
+            // x-value is less than the current x-value in LUT
+            last_idx = i;
+            break;
+        }
+    }
+
+    // Return the linearly interpolated data
+    return (lut.at(target_param)[last_idx - 1].second + lut.at(target_param)[last_idx].second) / 2;
+}
+
 int main() {
     std::map<std::string, std::vector<std::pair<double, double>>> result = read_csv("../T1_Re0.100_M0.00_N9.0");
 
-    for (auto& pair : result["CD"]) {
-        std::cout << pair.first << " " << pair.second << std::endl;
-    }
+    std::cout << get_value(result, "CL", -0.22) << std::endl;
     return 0;
 }
