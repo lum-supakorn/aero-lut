@@ -21,7 +21,17 @@ std::map<std::string, std::vector<std::pair<double, double>>> read_csv(std::stri
     // The resulting LUT
     std::map<std::string, std::vector<std::pair<double, double>>> result;
     // Column names
-    std::vector<std::string> columns;
+    std::vector<std::string> columns = {
+            "CL",
+            "CD",
+            "CDp",
+            "Cm",
+            "Top Xtr",
+            "Bot Xtr",
+            "Cpmin",
+            "Chinge",
+            "XCp"
+    };
 
     // Create an input filestream
     std::ifstream input_file(filename);
@@ -32,36 +42,12 @@ std::map<std::string, std::vector<std::pair<double, double>>> read_csv(std::stri
     // A string for storing lines
     std::string line;
 
-    // Skip the first 9 lines (XFLR5 exported polar file header)
+    // Skip the first 11 lines (XFLR5 exported polar file header)
     // This is hard-coded under the assumption that the exported
     // polar file are of this format.
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < 11; i++) {
         std::getline(input_file, line);
     }
-
-    // Read and extract the column names
-    if (input_file.good()) {
-        // Extract the first line which defines the column names
-        std::getline(input_file, line);
-
-        // Create a stringstream from the line
-        std::stringstream ss(line);
-
-        std::string column;
-
-        // Skip the alpha column as it is used as the
-        // key to every column in the result map
-        ss >> column;
-
-        // Extract the rest of the column names and
-        // store them in the column vector
-        while (ss >> column) {
-            columns.push_back(column);
-        }
-    }
-
-    // Skip another line (dash underline)
-    std::getline(input_file, line);
 
     // Read the data row by row
     while (std::getline(input_file, line)) {
@@ -91,13 +77,15 @@ std::map<std::string, std::vector<std::pair<double, double>>> read_csv(std::stri
         }
     }
 
+    input_file.close();
+
     return result;
 }
 
 int main() {
     std::map<std::string, std::vector<std::pair<double, double>>> result = read_csv("../T1_Re0.100_M0.00_N9.0");
 
-    for (auto& pair : result["Cpmin"]) {
+    for (auto& pair : result["CD"]) {
         std::cout << pair.first << " " << pair.second << std::endl;
     }
     return 0;
